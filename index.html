@@ -204,14 +204,14 @@
     </style>
   </head>
   <body>
-    <header><h1>short</h1></header>
+    <header><h1>9lnk.io</h1></header>
     <main x-data="app" x-cloak>
       <p
         x-show.transition.opacity="alert"
         :class="alert?.type"
         x-text="alert?.message"
       ></p>
-      <input placeholder="输入要缩短的网址..." x-model="url" x-ref="url" />
+      <input placeholder="输入网址..." x-model="url" x-ref="url" />
       <details>
         <summary>自定义 Slug</summary>
         <div>
@@ -243,7 +243,7 @@
           }
 
           if (this.isValidated()) {
-            this.alert = { type: "error", message: "非法格式 URL" };
+            this.alert = { type: "error", message: "非法 URL" };
             return;
           }
 
@@ -273,7 +273,7 @@
                 this.alert = {
                   type: "success",
                   message: `${
-                    document.execCommand("Copy") ? "复制链接" : "生成链接"
+                    document.execCommand("Copy") ? "链接已复制" : "生成链接"
                   } `,
                 };
               });

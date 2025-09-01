@@ -76,7 +76,6 @@ export async function onRequest(context) {
   }
 
   try {
-    // 如果指定了自定义slug
     if (slug) {
       const existingUrl = await env.DB.prepare(
         `SELECT url FROM links WHERE slug = ?`
@@ -84,7 +83,6 @@ export async function onRequest(context) {
         .bind(slug)
         .first();
 
-      // URL和slug组合已存在
       if (existingUrl && existingUrl.url === url) {
         return Response.json(
           { slug, link: `${origin}/${slug}` },
@@ -101,14 +99,12 @@ export async function onRequest(context) {
       }
     }
 
-    // 检查目标URL是否已存在
     const existingSlug = await env.DB.prepare(
       `SELECT slug FROM links WHERE url = ?`
     )
       .bind(url)
       .first();
 
-    // URL已存在且没有指定自定义slug，返回现有的
     if (existingSlug && !slug) {
       return Response.json(
         { slug: existingSlug.slug, link: `${origin}/${existingSlug.slug}` },
@@ -116,7 +112,6 @@ export async function onRequest(context) {
       );
     }
 
-    // 检查是否为同域名
     const targetUrl = new URL(url);
     if (targetUrl.hostname === originUrl.hostname) {
       return Response.json(
