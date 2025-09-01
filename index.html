@@ -216,6 +216,9 @@
         <summary>自定义 Slug</summary>
         <div>
           <input placeholder="填写自定义 Slug" x-model="slug" />
+          <small :style="{ color: slugValidationError ? '#fa5252' : '#6c757d' }">
+            <span x-text="slugValidationError || '2-10 个字符, 只能包含大小写字母和数字'"></span>
+          </small>
         </div>
       </details>
       <button
@@ -233,6 +236,16 @@
         slug: "",
         alert: null,
         loading: false,
+        get slugValidationError() {
+          if (!this.slug) return null;
+          if (this.slug.length < 2 || this.slug.length > 10) {
+            return "长度必须在2-10个字符之间";
+          }
+          if (!/^[a-zA-Z0-9]+$/.test(this.slug)) {
+            return "只能包含大小写字母和数字";
+          }
+          return null;
+        },
         isValidated() {
           return !/^https?:\/\/.{3,}/.test(this.url);
         },
@@ -244,6 +257,11 @@
 
           if (this.isValidated()) {
             this.alert = { type: "error", message: "非法 URL" };
+            return;
+          }
+
+          if (this.slugValidationError) {
+            this.alert = { type: "error", message: this.slugValidationError };
             return;
           }
 

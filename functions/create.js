@@ -64,15 +64,21 @@ export async function onRequest(context) {
     );
   }
 
-  // 自定义slug长度检查：2-10个字符且不以文件后缀结尾
-  if (
-    slug &&
-    (slug.length < 2 || slug.length > 10 || /.+\.[a-zA-Z]+$/.test(slug))
-  ) {
-    return Response.json(
-      { message: "slug 长度必须在 2-10 个字符之间, 且不能以文件后缀结尾" },
-      { headers: CORS_HEADERS, status: 400 }
-    );
+  // 自定义slug验证：2-10个字符，只允许大小写字母和数字
+  if (slug) {
+    if (slug.length < 2 || slug.length > 10) {
+      return Response.json(
+        { message: "slug 长度必须在 2-10 个字符之间" },
+        { headers: CORS_HEADERS, status: 400 }
+      );
+    }
+    
+    if (!/^[a-zA-Z0-9]+$/.test(slug)) {
+      return Response.json(
+        { message: "slug 只能包含大小写字母和数字" },
+        { headers: CORS_HEADERS, status: 400 }
+      );
+    }
   }
 
   try {
