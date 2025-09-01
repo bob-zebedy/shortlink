@@ -1,23 +1,11 @@
 DROP TABLE IF EXISTS links;
 
 CREATE TABLE IF NOT EXISTS links (
-  `id` integer PRIMARY KEY NOT NULL,
-  `url` text,
-  `slug` text,
-  `ua` text,
-  `ip` text,
-  `status` int,
-  `ctime` DATE
+  `id` INTEGER PRIMARY KEY AUTOINCREMENT,
+  `url` TEXT NOT NULL,
+  `slug` VARCHAR(50) NOT NULL UNIQUE,
+  `cinfo` TEXT,
+  `ctime` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP
 );
 
-DROP TABLE IF EXISTS logs;
-
-CREATE TABLE IF NOT EXISTS logs (
-  `id` integer PRIMARY KEY NOT NULL,
-  `url` text,
-  `slug` text,
-  `referer` text,
-  `ua` text,
-  `ip` text,
-  `ctime` DATE
-);
+CREATE INDEX IF NOT EXISTS idx_links_slug ON links(`slug`);

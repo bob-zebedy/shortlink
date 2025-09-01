@@ -1,4 +1,3 @@
-// 生成随机字符串
 function generateRandomString(length) {
   const characters =
     "1234567890abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";
@@ -12,21 +11,23 @@ function generateRandomString(length) {
   return result;
 }
 
-// 格式化当前时间为中国时间
 function getFormattedTime() {
-  return new Intl.DateTimeFormat("zh-CN", {
-    timeZone: "Asia/Shanghai",
-    year: "numeric",
-    month: "long",
-    day: "numeric",
-    hour12: false,
-    hour: "2-digit",
-    minute: "2-digit",
-    second: "2-digit",
-  }).format(new Date());
+  const now = new Date();
+
+  const chinaTime = new Date(
+    now.toLocaleString("en-US", { timeZone: "Asia/Shanghai" })
+  );
+
+  const year = chinaTime.getFullYear();
+  const month = String(chinaTime.getMonth() + 1).padStart(2, "0");
+  const day = String(chinaTime.getDate()).padStart(2, "0");
+  const hours = String(chinaTime.getHours()).padStart(2, "0");
+  const minutes = String(chinaTime.getMinutes()).padStart(2, "0");
+  const seconds = String(chinaTime.getSeconds()).padStart(2, "0");
+
+  return `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
 }
 
-// CORS 头部配置
 const CORS_HEADERS = {
   "Access-Control-Allow-Origin": "*",
   "Access-Control-Allow-Headers": "Content-Type",
@@ -44,19 +45,31 @@ export async function onRequest(context) {
   }
 
   const { request, env } = context;
-  const originUrl = new URL(request.url);
-  const clientIP =
-    request.headers.get("x-forwarded-for") || request.headers.get("clientIP");
-  const userAgent = request.headers.get("user-agent");
-  const origin = `${originUrl.protocol}//${originUrl.hostname}`;
+  const originURL = new URL(request.url);
+  const origin = `${originURL.protocol}//${originURL.hostname}`;
   const formattedDate = getFormattedTime();
+
+  const creatorInfo = {
+    ip:
+      request.headers.get("x-forwarded-for") ||
+      request.headers.get("clientIP") ||
+      request.headers.get("CF-Connecting-IP"),
+    country: request.headers.get("CF-IPCountry"),
+  };
+
+  const cleanCreatorInfo = Object.fromEntries(
+    Object.entries(creatorInfo).filter(
+      ([_, value]) => value !== null && value !== undefined
+    )
+  );
+
+  const creatorInfoJson = JSON.stringify(cleanCreatorInfo);
 
   const { url, slug } = await request.json();
   if (!url) {
     return Response.json({ message: "缺少 URL" });
   }
 
-  // URL格式检查
   if (!/^https?:\/\/.{3,}/.test(url)) {
     return Response.json(
       { message: "URL 格式不正确" },
@@ -64,7 +77,6 @@ export async function onRequest(context) {
     );
   }
 
-  // 自定义slug验证：2-10个字符，只允许大小写字母和数字
   if (slug) {
     if (slug.length < 2 || slug.length > 10) {
       return Response.json(
@@ -72,7 +84,7 @@ export async function onRequest(context) {
         { headers: CORS_HEADERS, status: 400 }
       );
     }
-    
+
     if (!/^[a-zA-Z0-9]+$/.test(slug)) {
       return Response.json(
         { message: "slug 只能包含大小写字母和数字" },
@@ -96,7 +108,6 @@ export async function onRequest(context) {
         );
       }
 
-      // slug已被占用
       if (existingUrl) {
         return Response.json(
           { message: "该短链接已被占用" },
@@ -119,21 +130,19 @@ export async function onRequest(context) {
     }
 
     const targetUrl = new URL(url);
-    if (targetUrl.hostname === originUrl.hostname) {
+    if (targetUrl.hostname === originURL.hostname) {
       return Response.json(
         { message: "不能创建相同域名的短链接" },
         { headers: CORS_HEADERS, status: 400 }
       );
     }
 
-    // 生成最终的slug
     const finalSlug = slug || generateRandomString(4);
 
-    // 插入新记录
     await env.DB.prepare(
-      `INSERT INTO links (url, slug, ip, status, ua, ctime) VALUES (?, ?, ?, ?, ?, ?)`
+      `INSERT INTO links (url, slug, cinfo, ctime) VALUES (?, ?, ?, ?)`
     )
-      .bind(url, finalSlug, clientIP, 1, userAgent, formattedDate)
+      .bind(url, finalSlug, creatorInfoJson, formattedDate)
       .run();
 
     return Response.json(
@@ -141,7 +150,7 @@ export async function onRequest(context) {
       { headers: CORS_HEADERS, status: 200 }
     );
   } catch (error) {
-    console.error("创建短链接失败: ", error);
+    console.error(`创建短链接失败: ${error}`);
     return Response.json(
       { message: "内部错误" },
       { headers: CORS_HEADERS, status: 500 }
