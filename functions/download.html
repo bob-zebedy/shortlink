@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>文件下载确认 - 9lnk.io</title>
+    <style>
+      :root {
+        --color-primary: #5c7cfa;
+        --color-primary-dark: #4263eb;
+        --color-warning: #ffd43b;
+        --color-warning-dark: #fab005;
+        --color-danger: #ff6b6b;
+        --color-danger-dark: #f03e3e;
+        --body-color: #495057;
+        --body-bg: #f8f9fa;
+        --border-color: #dee2e6;
+      }
+
+      body {
+        max-width: 42rem;
+        margin: 2rem auto;
+        padding: 0 2rem;
+        color: var(--body-color);
+        background: var(--body-bg);
+        font-family: system-ui, -apple-system, "Segoe UI", Roboto, Helvetica,
+          Arial, sans-serif;
+        line-height: 1.5;
+        text-rendering: optimizelegibility;
+        -webkit-font-smoothing: antialiased;
+      }
+
+      .warning-container {
+        background: #fff;
+        border: 2px solid var(--color-warning);
+        border-radius: 0.5rem;
+        padding: 2rem;
+        text-align: center;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+      }
+
+      .warning-icon {
+        font-size: 4rem;
+        color: var(--color-warning-dark);
+        margin-bottom: 1rem;
+      }
+
+      h1 {
+        color: var(--color-warning-dark);
+        font-size: 1.5rem;
+        margin-bottom: 1rem;
+        font-weight: 600;
+      }
+
+      .file-info {
+        background: #f8f9fa;
+        border: 1px solid var(--border-color);
+        border-radius: 0.25rem;
+        padding: 1rem;
+        margin: 1.5rem 0;
+        word-break: break-all;
+      }
+
+      .file-url {
+        font-family: "Courier New", monospace;
+        font-size: 0.9rem;
+        color: var(--color-primary);
+      }
+
+      .button-group {
+        display: flex;
+        gap: 1rem;
+        justify-content: center;
+        margin-top: 2rem;
+      }
+
+      button {
+        appearance: none;
+        padding: 0.75rem 1.5rem;
+        border: 1px solid;
+        border-radius: 0.25rem;
+        font-size: 1rem;
+        font-weight: 500;
+        cursor: pointer;
+        transition: all 0.3s;
+        text-decoration: none;
+        display: inline-block;
+      }
+
+      .btn-download {
+        background: var(--color-primary);
+        border-color: var(--color-primary);
+        color: #fff;
+      }
+
+      .btn-download:hover {
+        background: var(--color-primary-dark);
+        border-color: var(--color-primary-dark);
+      }
+
+      .btn-cancel {
+        background: #fff;
+        border-color: var(--border-color);
+        color: var(--body-color);
+      }
+
+      .btn-cancel:hover {
+        background: #f8f9fa;
+        border-color: var(--color-danger);
+        color: var(--color-danger);
+      }
+
+      @media (max-width: 768px) {
+        .button-group {
+          flex-direction: column;
+        }
+
+        body {
+          margin: 1rem auto;
+          padding: 0 1rem;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="warning-container">
+      <div class="warning-icon">⚠️</div>
+      <h1>您即将下载一个文件</h1>
+      <h1>请确认您信任此链接的来源</h1>
+
+      <div class="file-info">
+        <strong>即将下载</strong>
+        <div class="file-url" id="fileUrl">__FILE_URL__</div>
+      </div>
+
+      <div class="button-group">
+        <button class="btn-download" onclick="goDownload()">
+          继续下载
+        </button>
+        <button class="btn-cancel" onclick="goBack()">取消</button>
+      </div>
+    </div>
+
+    <script>
+      const fileUrlElement = document.getElementById("fileUrl");
+      const targetUrl = fileUrlElement.textContent;
+
+      function goDownload() {
+        if (targetUrl && targetUrl !== "__FILE_URL__") {
+          window.location.href = targetUrl;
+        }
+      }
+
+      function goBack() {
+        if (window.history.length > 1) {
+          window.history.back();
+        } else {
+          window.location.href = "/";
+        }
+      }
+    </script>
+  </body>
+</html>
