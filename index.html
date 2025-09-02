@@ -216,8 +216,12 @@
         <summary>自定义 Slug</summary>
         <div>
           <input placeholder="填写自定义 Slug" x-model="slug" />
-          <small :style="{ color: slugValidationError ? '#fa5252' : '#6c757d' }">
-            <span x-text="slugValidationError || '2-10 个字符, 只能包含大小写字母和数字'"></span>
+          <small
+            :style="{ color: slugValidationError ? '#fa5252' : '#6c757d' }"
+          >
+            <span
+              x-text="slugValidationError || '2-10 个字符, 只能包含大小写字母和数字'"
+            ></span>
           </small>
         </div>
       </details>
@@ -303,5 +307,14 @@
         },
       };
     </script>
+    <footer>
+      如您发现有链接涉嫌欺诈等违法行为, 请联系:
+      <a href="mailto:contact@9lnk.io?subject=举报可疑链接">contact@9lnk.io</a>
+      <br /><small
+        style="font-size: 0.75rem; margin-top: 0.5rem; display: block"
+      >
+        举报邮件请包含: 短链接地址、举报原因
+      </small>
+    </footer>
   </body>
 </html>
