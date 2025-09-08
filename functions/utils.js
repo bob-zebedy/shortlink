@@ -26,5 +26,6 @@ export function collectAccessInfo(request) {
     country: request.headers.get("CF-IPCountry"),
     userAgent: request.headers.get("User-Agent"),
     referer: request.headers.get("Referer"),
+    forwarded: request.headers.get("X-Forwarded-For"),
   };
 }
