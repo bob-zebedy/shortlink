@@ -104,7 +104,7 @@ export async function onRequest(context) {
     const targetUrl = new URL(url);
     if (targetUrl.hostname === originURL.hostname) {
       return Response.json(
-        { message: "不能创建相同域名的短链接" },
+        { message: "不能创建本站域名的短链接" },
         { headers: CORS_HEADERS, status: 400 }
       );
     }
