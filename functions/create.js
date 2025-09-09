@@ -42,9 +42,10 @@ export async function onRequest(context) {
     return Response.json({ message: "缺少 URL" });
   }
 
-  if (!/^https?:\/\/.{3,}/.test(url)) {
+  if (!/^https?:\/\/(?:(?:[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?\.)+[a-zA-Z]{2,}|(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?))(?::[1-9][0-9]{0,4})?(?:\/[a-zA-Z0-9._~:/?#[\]@!$&'()*+,;=%\-]*)?$/.test(url)
+  ) {
     return Response.json(
-      { message: "URL 格式不正确" },
+      { message: "URL 格式不正确或不支持的协议" },
       { headers: CORS_HEADERS, status: 400 }
     );
   }

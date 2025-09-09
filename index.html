@@ -309,17 +309,9 @@
           }
           return null;
         },
-        isValidated() {
-          return !/^https?:\/\/.{3,}/.test(this.url);
-        },
         submit($refs, $nextTick) {
           if (!this.url) {
             this.alert = { type: "error", message: "缺少 URL" };
-            return;
-          }
-
-          if (this.isValidated()) {
-            this.alert = { type: "error", message: "非法 URL" };
             return;
           }
 
