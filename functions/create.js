@@ -39,13 +39,13 @@ export async function onRequest(context) {
 
   const { url, slug } = await request.json();
   if (!url) {
-    return Response.json({ message: "缺少 URL" });
+    return Response.json({ message: "请输入网址" });
   }
 
   if (!/^https?:\/\/(?:(?:[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?\.)+[a-zA-Z]{2,}|(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?))(?::[1-9][0-9]{0,4})?(?:\/[a-zA-Z0-9._~:/?#[\]@!$&'()*+,;=%\-]*)?$/.test(url)
   ) {
     return Response.json(
-      { message: "URL 格式不正确或不支持的协议" },
+      { message: "URL 格式不正确或使用了不支持的协议" },
       { headers: CORS_HEADERS, status: 400 }
     );
   }
@@ -53,14 +53,14 @@ export async function onRequest(context) {
   if (slug) {
     if (slug.length < 2 || slug.length > 10) {
       return Response.json(
-        { message: "slug 长度必须在 2-10 个字符之间" },
+        { message: "Slug 长度必须在 2-10 个字符之间" },
         { headers: CORS_HEADERS, status: 400 }
       );
     }
 
     if (!/^[a-zA-Z0-9]+$/.test(slug)) {
       return Response.json(
-        { message: "slug 只能包含大小写字母和数字" },
+        { message: "Slug 只能包含大小写字母和数字" },
         { headers: CORS_HEADERS, status: 400 }
       );
     }

@@ -270,7 +270,7 @@
         :class="alert?.type"
         x-text="alert?.message"
       ></p>
-      <input placeholder="输入网址..." x-model="url" x-ref="url" />
+      <input placeholder="输入 URL..." x-model="url" x-ref="url" />
       <details>
         <summary>自定义 Slug</summary>
         <div>
@@ -286,10 +286,10 @@
       </details>
       <button
         :class="{ loading }"
-        :disabled="loading || isValidated()"
+        :disabled="loading"
         @click="submit($refs, $nextTick)"
       >
-        生成
+        生成链接
       </button>
     </main>
     <script src="asset/js/alpine.js"></script>
@@ -302,16 +302,16 @@
         get slugValidationError() {
           if (!this.slug) return null;
           if (this.slug.length < 2 || this.slug.length > 10) {
-            return "长度必须在2-10个字符之间";
+            return "slug 长度必须在2-10个字符之间";
           }
           if (!/^[a-zA-Z0-9]+$/.test(this.slug)) {
-            return "只能包含大小写字母和数字";
+            return "slug 只能包含大小写字母和数字";
           }
           return null;
         },
         submit($refs, $nextTick) {
           if (!this.url) {
-            this.alert = { type: "error", message: "缺少 URL" };
+            this.alert = { type: "error", message: "请输入 URL" };
             return;
           }
 
