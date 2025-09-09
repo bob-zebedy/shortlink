@@ -20,9 +20,9 @@ export function getFormattedTime() {
 export function collectAccessInfo(request) {
   return {
     ip:
+    request.headers.get("CF-Connecting-IP") ||
       request.headers.get("x-forwarded-for") ||
-      request.headers.get("clientIP") ||
-      request.headers.get("CF-Connecting-IP"),
+      request.headers.get("clientIP"),
     country: request.headers.get("CF-IPCountry"),
     userAgent: request.headers.get("User-Agent"),
     referer: request.headers.get("Referer")
